@@ -2,7 +2,15 @@
 <resources>
 
     <string name="app_name">AlarmDemo</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    <string name="lbl_use_alarmmanager">Use Alarmmanager.</string>
+    <string name="lbl_do_not_use_alarmmanager">Do not use Alarmmanager.</string>
+    <string name="lbl_init">No changes.</string>
+    <string name="lbl_change">%s</string>
+
+    <string name="title_app_name">AlarmDemo</string>
+    <string name="title_activity_no_alarm_manager">NoAlarmManagerActivity</string>
+    <string name="title_activity_alarm_manager">AlarmManager</string>
 
 </resources>
