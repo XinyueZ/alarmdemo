@@ -8,6 +8,12 @@
     <string name="lbl_do_not_use_alarmmanager">Do not use Alarmmanager.</string>
     <string name="lbl_init">No changes.</string>
     <string name="lbl_change">%s</string>
+    <string name="lbl_change_receiver">AlarmReceiver %s</string>
+    <string name="lbl_change_service">AlarmService %s</string>
+    <string name="lbl_rtc_per_min">The alarmmanager call us every minute at the start of this activity.
+        You\'ll see a Toast message. You can dismiss this view. Start at %s</string>
+
+    <string name="btn_stop_alarm">Stop</string>
 
     <string name="title_app_name">AlarmDemo</string>
     <string name="title_activity_no_alarm_manager">NoAlarmManagerActivity</string>

@@ -65,6 +65,7 @@ public final class NoAlarmManagerActivity extends ActionBarActivity {
 		setContentView(LAYOUT);
 		mMsgTv = (TextView) findViewById(R.id.msg_tv);
 		getApplication().registerReceiver(mReceiver, mIntentFilter);
+		// A background service that listens to system tick changing.
 		getApplication().startService(new Intent(getApplication(), NoAlarmManagerService.class));
 	}
 
