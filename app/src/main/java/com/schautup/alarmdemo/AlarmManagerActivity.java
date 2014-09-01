@@ -1,5 +1,7 @@
 package com.schautup.alarmdemo;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,9 +24,18 @@ public final class AlarmManagerActivity extends ActionBarActivity {
 	 * Output.
 	 */
 	private TextView mMsgTv;
+	/**
+	 * Intent to call {@link com.schautup.alarmdemo.AlarmReceiver}.
+	 */
+	private PendingIntent mPendingIntent;
 
 	/**
-	 * Show an instance of {@link AlarmManagerActivity}
+	 * The {@link android.app.AlarmManager}.
+	 */
+	private AlarmManager mAlarmManager;
+
+	/**
+	 * /** Show an instance of {@link AlarmManagerActivity}
 	 *
 	 * @param cxt
 	 * 		{@link android.content.Context}.
@@ -39,5 +50,19 @@ public final class AlarmManagerActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(LAYOUT);
+		mMsgTv = (TextView) findViewById(R.id.msg_tv);
+
+		// Start tracking for every minute.
+		mAlarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(this, AlarmReceiver.class);
+		mPendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+		mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 0, 60 * 1000, mPendingIntent);
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		// Stop tracking for every minute.
+		mAlarmManager.cancel(mPendingIntent);
 	}
 }
