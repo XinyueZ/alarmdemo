@@ -29,8 +29,8 @@ public final class AlarmManagerActivity extends ActionBarActivity implements Add
 	/**
 	 * Daily alarming.
 	 */
-	static final int PERIOD = 60 * 1000;
-	//static final int PERIOD = AlarmManager.INTERVAL_DAY;
+//	static final int PERIOD = 60 * 1000;
+	static final long PERIOD = AlarmManager.INTERVAL_DAY;
 	/**
 	 * Main layout for this component.
 	 */
