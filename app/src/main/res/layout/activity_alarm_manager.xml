@@ -1,23 +1,52 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.schautup.alarmdemo.AlarmManagerActivity">
 
-    <TextView
-        android:id="@+id/msg_tv"
-        android:text="@string/lbl_rtc_per_min"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/content_ll"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/btn_stop_alarm"
-        android:onClick="stopAlarm"/>
-</LinearLayout>
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/msg_tv"
+            android:text="@string/lbl_elapsed_per_min"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/start_single_alarm_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_start_alarm"
+                android:onClick="startAlarm" />
+
+            <Button
+                android:id="@+id/stop_single_alarm_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/btn_stop_alarm"
+                android:enabled="false"
+                android:onClick="stopAlarm" />
+        </LinearLayout>
+
+
+        <TextView
+            android:text="@string/lbl_elapsed_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</ScrollView>

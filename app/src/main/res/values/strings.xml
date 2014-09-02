@@ -10,9 +10,16 @@
     <string name="lbl_change">%s</string>
     <string name="lbl_change_receiver">AlarmReceiver %s</string>
     <string name="lbl_change_service">AlarmService %s</string>
-    <string name="lbl_rtc_per_min">The alarmmanager call us every minute at the start of this activity.
-        You\'ll see a Toast message. You can dismiss this view. Start at %s</string>
+    <string name="lbl_elapsed_per_min">The alarmmanager(ELAPSED_REALTIME_WAKEUP) calls us every minute at the start of this activity. You\'ll see a Toast message. You can dismiss this view. Start at %s</string>
+    <string name="lbl_elapsed_time">The alarmmanager(ELAPSED_REALTIME_WAKEUP) calls us at every time you set on
+        every day. You\'ll see a Toast message. You can dismiss this view. </string>
+    <string name="lbl_canceled">Alarm is canceled.</string>
+    <string name="lbl_hour">h</string>
+    <string name="lbl_minute">m</string>
+    <string name="lbl_warning">The set time must be larger than current.</string>
+    <string name="lbl_stop_listen_sys_tick">Stop listening time-tick of system(ACTION_TIME_TICK).</string>
 
+    <string name="btn_start_alarm">Start</string>
     <string name="btn_stop_alarm">Stop</string>
 
     <string name="title_app_name">AlarmDemo</string>

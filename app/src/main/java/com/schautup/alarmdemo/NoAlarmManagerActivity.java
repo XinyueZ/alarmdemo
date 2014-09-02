@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 
@@ -43,7 +44,7 @@ public final class NoAlarmManagerActivity extends ActionBarActivity {
 			Log.d("demo", "Every minute on NoAlarmManagerActivity: " + intent.toString());
 			Calendar c = Calendar.getInstance();
 			c.setTimeInMillis(System.currentTimeMillis());
-			mMsgTv.setText(String.format(getString(R.string.lbl_change),  c.getTime()));
+			mMsgTv.setText(String.format(getString(R.string.lbl_change), c.getTime()));
 		}
 	};
 
@@ -67,11 +68,41 @@ public final class NoAlarmManagerActivity extends ActionBarActivity {
 		getApplication().registerReceiver(mReceiver, mIntentFilter);
 		// A background service that listens to system tick changing.
 		getApplication().startService(new Intent(getApplication(), NoAlarmManagerService.class));
+		findViewById(R.id.start_listen_time_tick_btn).setEnabled(false);
+		findViewById(R.id.stop_listen_time_tick_btn).setEnabled(true);
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		if(mReceiver !=null) {
+			getApplication().unregisterReceiver(mReceiver);
+		}
+	}
+
+	/**
+	 * Start listening to system's time-tick.
+	 *
+	 * @param view
+	 * 		No usage here.
+	 */
+	public void startAlarm(View view) {
+		getApplication().registerReceiver(mReceiver, mIntentFilter);
+		view.setEnabled(false);
+		findViewById(R.id.stop_listen_time_tick_btn).setEnabled(true);
+	}
+
+	/**
+	 * Stop listening to system's time-tick.
+	 *
+	 * @param view
+	 * 		No usage here.
+	 */
+	public void stopAlarm(View view) {
 		getApplication().unregisterReceiver(mReceiver);
+		mReceiver = null;
+		findViewById(R.id.start_listen_time_tick_btn).setEnabled(true);
+		view.setEnabled(false);
+
 	}
 }
