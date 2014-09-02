@@ -2,6 +2,7 @@ package com.schautup.alarmdemo;
 
 import java.util.Calendar;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
@@ -18,15 +20,13 @@ import android.widget.Toast;
  * <p/>
  * <b>It will be called as soon as it was registered in to an {@link android.app.PendingIntent}.</b>
  * <p/>
- * For example:
- * <code>
+ * For example: <code>
  * <p/>
  * Intent intent = new Intent(this, AlarmReceiver.class);
  * <p/>
  * mPendingIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
  * <p/>
- * mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 0, 60 * 1000, mPendingIntent);
- * </code>
+ * mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, 0, 60 * 1000, mPendingIntent); </code>
  *
  * @author Xinyue Zhao
  */
@@ -38,30 +38,57 @@ public final class AlarmReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context cxt, Intent intent) {
+		scheduleAlarms(cxt);
+
 		mCalendar = Calendar.getInstance();
 		mCalendar.setTimeInMillis(System.currentTimeMillis());
 
 		Toast.makeText(cxt, String.format(cxt.getString(R.string.lbl_change_receiver), mCalendar.getTime()),
-				Toast.LENGTH_LONG)
-				.show();
+				Toast.LENGTH_LONG).show();
 
 		int notificationID = (int) System.currentTimeMillis();
-		((NotificationManager) cxt.getSystemService(Context.NOTIFICATION_SERVICE)).notify(notificationID,
-				buildInBox(cxt, buildNotificationCommon(cxt, notificationID)));
+		((NotificationManager) cxt.getSystemService(Context.NOTIFICATION_SERVICE)).notify(notificationID, buildInBox(
+				cxt, buildNotificationCommon(cxt, notificationID)));
 	}
 
 	/**
+	 * We schedule alarm by ourselves.
+	 *
+	 * @param cxt
+	 * 		{@link android.content.Context}.
+	 */
+	private static void scheduleAlarms(Context cxt) {
+		AlarmManager mgr = (AlarmManager) cxt.getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(cxt, AlarmReceiver.class);
+		PendingIntent pi = PendingIntent.getBroadcast(cxt, (int) System.currentTimeMillis(), intent,
+				PendingIntent.FLAG_ONE_SHOT);
+		((App)cxt.getApplicationContext()).setPendIntentScheduleReceiver(pi);
+		if (android.os.Build.VERSION.SDK_INT >= 19) {
+			mgr.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+					SystemClock.elapsedRealtime() + AlarmManagerActivity.PERIOD, pi);
+		} else {
+			mgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+					SystemClock.elapsedRealtime() + AlarmManagerActivity.PERIOD, pi);
+		}
+
+	}
+
+
+	/**
 	 * Get the {@link android.support.v4.app.NotificationCompat.Builder} of {@link android.app.Notification}.
-	 * @param cxt {@link android.content.Context}.
-	 * @param id The id of this notification.
+	 *
+	 * @param cxt
+	 * 		{@link android.content.Context}.
+	 * @param id
+	 * 		The id of this notification.
 	 * @return A {@link android.support.v4.app.NotificationCompat.Builder}.
 	 */
 	private NotificationCompat.Builder buildNotificationCommon(Context cxt, int id) {
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(cxt).setWhen(
-				System.currentTimeMillis()).setTicker("Ticker: AlarmReceiver").setAutoCancel(
-				true).setSmallIcon(R.drawable.ic_launcher).setLargeIcon(BitmapFactory.decodeResource(cxt.getResources(),
-				R.drawable.ic_launcher)).setContentIntent(createMainPendingIntent(cxt, id))
-				.setContentTitle("Content title: " + mCalendar.getTime().toString()).setContentText("Content " +
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(cxt).setWhen(System.currentTimeMillis())
+				.setTicker("Ticker: AlarmReceiver").setAutoCancel(true).setSmallIcon(R.drawable.ic_launcher)
+				.setLargeIcon(BitmapFactory.decodeResource(cxt.getResources(), R.drawable.ic_launcher))
+				.setContentIntent(createMainPendingIntent(cxt, id)).setContentTitle(
+						"Content title: " + mCalendar.getTime().toString()).setContentText("Content " +
 						"text: " + mCalendar.getTime().toString());
 
 
@@ -74,8 +101,11 @@ public final class AlarmReceiver extends BroadcastReceiver {
 
 	/**
 	 * Make more new modern style on the {@link android.app.Notification}.
-	 * @param cxt  {@link android.content.Context}.
-	 * @param builder  A {@link NotificationCompat.Builder}.
+	 *
+	 * @param cxt
+	 * 		{@link android.content.Context}.
+	 * @param builder
+	 * 		A {@link NotificationCompat.Builder}.
 	 * @return A built {@link android.app.Notification}.
 	 */
 	private Notification buildInBox(Context cxt, NotificationCompat.Builder builder) {
@@ -91,8 +121,11 @@ public final class AlarmReceiver extends BroadcastReceiver {
 
 	/**
 	 * Dummy action pending for clicking the {@link android.app.Notification}.
-	 * @param cxt {@link android.content.Context}.
-	 * @param reqCode The request code after clicking  the {@link android.app.Notification}.
+	 *
+	 * @param cxt
+	 * 		{@link android.content.Context}.
+	 * @param reqCode
+	 * 		The request code after clicking  the {@link android.app.Notification}.
 	 * @return A {@link android.app.PendingIntent}  clicking  the {@link android.app.Notification}.
 	 */
 	private PendingIntent createMainPendingIntent(Context cxt, int reqCode) {
@@ -103,8 +136,11 @@ public final class AlarmReceiver extends BroadcastReceiver {
 
 	/**
 	 * Dummy action pending for action buttons on the {@link android.app.Notification}.
-	 * @param cxt {@link android.content.Context}.
-	 * @param reqCode The request code after firing the action on the {@link android.app.Notification}.
+	 *
+	 * @param cxt
+	 * 		{@link android.content.Context}.
+	 * @param reqCode
+	 * 		The request code after firing the action on the {@link android.app.Notification}.
 	 * @return A {@link android.app.PendingIntent} for action buttons on the {@link android.app.Notification}.
 	 */
 	private PendingIntent createActionPendingIntent(Context cxt, int reqCode) {

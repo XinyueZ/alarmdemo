@@ -27,6 +27,11 @@ import android.widget.Toast;
  */
 public final class AlarmManagerActivity extends ActionBarActivity implements AddNewLineCallback {
 	/**
+	 * Daily alarming.
+	 */
+	static final int PERIOD = 60 * 1000;
+	//static final int PERIOD = AlarmManager.INTERVAL_DAY;
+	/**
 	 * Main layout for this component.
 	 */
 	private static final int LAYOUT = R.layout.activity_alarm_manager;
@@ -120,11 +125,11 @@ public final class AlarmManagerActivity extends ActionBarActivity implements Add
 		mMsgTv.setText(String.format(getString(R.string.lbl_elapsed_per_min), c.getTime()));
 
 		Intent intent = new Intent(AlarmManagerActivity.this, AlarmReceiver.class);
-		PendingIntent pi  = PendingIntent.getBroadcast(AlarmManagerActivity.this, 0, intent,
+		PendingIntent pi = PendingIntent.getBroadcast(AlarmManagerActivity.this, 0, intent,
 				PendingIntent.FLAG_UPDATE_CURRENT);
 		// Time since boot(as the time we see the view) + ONE_MINUTE(We should wait).
-		mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-				SystemClock.elapsedRealtime() + ONE_MINUTE, ONE_MINUTE, pi);
+		mAlarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + ONE_MINUTE,
+				ONE_MINUTE, pi);
 
 		//We have started alarm for every minute, only to do is stop.
 		findViewById(R.id.stop_single_alarm_btn).setEnabled(true);
@@ -204,7 +209,7 @@ public final class AlarmManagerActivity extends ActionBarActivity implements Add
 		 * @param callback
 		 * 		A callback event when a new setting line(group) insert.
 		 */
-		public ViewStub(Context cxt, AlarmManager alarmManager, View parentV, final AddNewLineCallback callback) {
+		public ViewStub(final Context cxt, AlarmManager alarmManager, View parentV, final AddNewLineCallback callback) {
 			mContext = cxt;
 			mAlarmManager = alarmManager;
 			mStartBtn = (Button) parentV.findViewById(R.id.start_btn);
@@ -240,10 +245,18 @@ public final class AlarmManagerActivity extends ActionBarActivity implements Add
 						// point we wanna.
 						long timeToAlarm = firstTime + (setTime - currentTime);
 						Intent intent = new Intent(mContext, AlarmReceiver.class);
-						mPendingIntent = PendingIntent.getBroadcast(mContext, (int) calendar.getTimeInMillis(),
-								intent, PendingIntent.FLAG_ONE_SHOT);
-						mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, timeToAlarm,
-								AlarmManager.INTERVAL_DAY, mPendingIntent);
+						mPendingIntent = PendingIntent.getBroadcast(mContext, 1, intent, PendingIntent.FLAG_ONE_SHOT);
+						((App)cxt.getApplicationContext()).setPendIntentScheduleReceiver(mPendingIntent);
+						if (android.os.Build.VERSION.SDK_INT >= 19) {
+							mAlarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, timeToAlarm, mPendingIntent);
+						} else {
+							mAlarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, timeToAlarm, mPendingIntent);
+
+							// We schedule by ourselves instead of calling method below. See AlarmReceiver#scheduleAlarms(Context cxt);
+							//
+							// mAlarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, timeToAlarm,
+							//									PERIOD, mPendingIntent);
+						}
 						mStartBtn.setEnabled(false);
 						mStopBtn.setEnabled(true);
 						mHourEt.setEnabled(false);
@@ -258,7 +271,7 @@ public final class AlarmManagerActivity extends ActionBarActivity implements Add
 			mStopBtn.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					mAlarmManager.cancel(mPendingIntent);
+					mAlarmManager.cancel(((App)cxt.getApplicationContext()).getPendIntentScheduleReceiver());
 					mStartBtn.setEnabled(true);
 					mStopBtn.setEnabled(false);
 					mHourEt.setEnabled(true);

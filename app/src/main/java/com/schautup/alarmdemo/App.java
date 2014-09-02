@@ -58,6 +58,16 @@ public final class App extends Application {
 	 */
 	private PendingIntent mPendIntentReceiver;
 
+
+	/**
+	 * The {@link android.app.PendingIntent} to call {@link com.schautup.alarmdemo.AlarmReceiver} of demo associated
+	 * with {@link com.schautup .alarmdemo.AlarmManagerActivity}.
+	 * <p/>
+	 * <b>This isn't a nice coding style, because here in demo we only wanna show the implementation of using {@link
+	 * android.app.AlarmManager}, we ignore the harm side of this coding. Don't use it in production.</b>
+	 */
+	private PendingIntent mPendIntentScheduleReceiver;
+
 	/**
 	 * Get cached setting groups for demo in {@link com.schautup.alarmdemo.AlarmManagerActivity}.
 	 *
@@ -91,10 +101,31 @@ public final class App extends Application {
 	 * Set the {@link android.app.PendingIntent} to call {@link com.schautup.alarmdemo.AlarmReceiver} of demo associated
 	 * with {@link com.schautup .alarmdemo.AlarmManagerActivity}.
 	 *
-	 * @param _pendIntentReceiver
+	 * @param pendIntentReceiver
 	 * 		The {@link android.app.PendingIntent} to call {@link com.schautup.alarmdemo.AlarmReceiver}.
 	 */
-	public void setPendIntentReceiver(PendingIntent _pendIntentReceiver) {
-		mPendIntentReceiver = _pendIntentReceiver;
+	public void setPendIntentReceiver(PendingIntent pendIntentReceiver) {
+		mPendIntentReceiver = pendIntentReceiver;
+	}
+
+
+	/**
+	 * Get the {@link android.app.PendingIntent} to call {@link com.schautup.alarmdemo.AlarmReceiver}
+	 *
+	 * @return The {@link android.app.PendingIntent}.
+	 */
+	public PendingIntent getPendIntentScheduleReceiver() {
+		return mPendIntentScheduleReceiver;
+	}
+
+	/**
+	 * Set the {@link android.app.PendingIntent} to call {@link com.schautup.alarmdemo.AlarmReceiver} of demo associated
+	 * with {@link com.schautup .alarmdemo.AlarmManagerActivity}.
+	 *
+	 * @param pendIntentScheduleReceiver
+	 * 		The {@link android.app.PendingIntent} to call {@link com.schautup.alarmdemo.AlarmReceiver}.
+	 */
+	public void setPendIntentScheduleReceiver(PendingIntent pendIntentScheduleReceiver) {
+		mPendIntentScheduleReceiver = pendIntentScheduleReceiver;
 	}
 }
